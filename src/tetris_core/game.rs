@@ -566,3 +566,28 @@ impl Game {
         self.randomizer.peek(count)
     }
 }
+
+// Implement Clone for the Game struct to allow the bot to simulate moves
+impl Clone for Game {
+    fn clone(&self) -> Self {
+        Game {
+            board: self.board.clone(),
+            current_piece: self.current_piece.clone(),
+            held_piece: self.held_piece,
+            can_hold: self.can_hold,
+            state: self.state,
+            score_system: ScoreSystem {
+                score: self.score_system.score,
+                level: self.score_system.level,
+                lines_cleared: self.score_system.lines_cleared,
+            },
+            randomizer: self.randomizer.clone_box(),
+            time_since_last_drop: self.time_since_last_drop,
+            gravity_delay: self.gravity_delay,
+            lock_delay_timer: self.lock_delay_timer,
+            lock_delay_active: self.lock_delay_active,
+            lock_delay_resets: self.lock_delay_resets,
+            last_successful_movement: self.last_successful_movement,
+        }
+    }
+}

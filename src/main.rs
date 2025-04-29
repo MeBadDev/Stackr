@@ -1,6 +1,9 @@
 mod tetris_core;
+mod bot;
 
-use tetris_core::{Game, Cell};
+use tetris_core::{Game, Cell, GameState};
+use bot::TetrisBot;
+use std::{thread, time::Duration};
 
 fn main() {
     println!("Tetris Core Engine Demo");
@@ -92,6 +95,64 @@ fn main() {
     print_board_state(&game);
     
     println!("\nTetris Core Engine demo completed!");
+    
+    // Bot demonstration
+    println!("\n\nTetris Bot Demonstration");
+    println!("=======================");
+    run_bot_demo();
+}
+
+// Function to demonstrate the Tetris-playing bot
+fn run_bot_demo() {
+    // Create a new game for the bot
+    let mut game = Game::new();
+    
+    // Create a new bot
+    let bot = TetrisBot::new();
+    
+    println!("Starting bot gameplay demonstration...");
+    println!("Bot will play automatically for 30 moves or until game over.");
+    println!("Initial board:");
+    print_board_state(&game);
+    
+    // Let the bot play for a fixed number of moves
+    let max_moves = 30;
+    let mut moves_made = 0;
+    
+    while game.state == GameState::Playing && moves_made < max_moves {
+        // Make a move using the bot
+        if bot.make_move(&mut game) {
+            moves_made += 1;
+            
+            // Display progress every few moves
+            if moves_made % 5 == 0 || moves_made == 1 {
+                println!("\nMove {}/{}", moves_made, max_moves);
+                println!("Score: {}, Level: {}, Lines: {}", 
+                    game.score_system.score,
+                    game.score_system.level,
+                    game.score_system.lines_cleared
+                );
+                print_board_state(&game);
+                
+                // Add a small delay to make the output readable
+                thread::sleep(Duration::from_millis(500));
+            }
+        } else {
+            println!("\nBot couldn't make a valid move.");
+            break;
+        }
+    }
+    
+    // Display final results
+    println!("\nBot demonstration completed.");
+    println!("Final statistics:");
+    println!("Moves made: {}", moves_made);
+    println!("Final score: {}", game.score_system.score);
+    println!("Level reached: {}", game.score_system.level);
+    println!("Lines cleared: {}", game.score_system.lines_cleared);
+    println!("Game state: {:?}", game.state);
+    println!("\nFinal board state:");
+    print_board_state(&game);
 }
 
 // Helper function to print the board state

@@ -9,6 +9,9 @@ pub trait Randomizer {
     
     /// Peek at the next n pieces without consuming them
     fn peek(&self, count: usize) -> Vec<PieceType>;
+    
+    /// Clone this randomizer (required for Game cloning)
+    fn clone_box(&self) -> Box<dyn Randomizer>;
 }
 
 /// A randomizer that implements the "7-bag" system used in modern Tetris
@@ -59,6 +62,15 @@ impl BagRandomizer {
     }
 }
 
+impl Clone for BagRandomizer {
+    fn clone(&self) -> Self {
+        BagRandomizer {
+            bag: self.bag.clone(),
+            preview_queue: self.preview_queue.clone(),
+        }
+    }
+}
+
 impl Randomizer for BagRandomizer {
     fn next(&mut self) -> PieceType {
         // Take the next piece from the queue
@@ -81,5 +93,9 @@ impl Randomizer for BagRandomizer {
             .take(count.min(self.preview_queue.len()))
             .cloned()
             .collect()
+    }
+    
+    fn clone_box(&self) -> Box<dyn Randomizer> {
+        Box::new(self.clone())
     }
 }
