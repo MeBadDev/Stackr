@@ -9,10 +9,8 @@ mod randomizer;
 
 // Re-export the main components
 pub use board::{Board, Cell};
-pub use piece::{Piece, PieceType};
-pub use game::{Game, GameState, ScoreSystem};
-pub use rotation::RotationSystem;
-pub use randomizer::{Randomizer, BagRandomizer};
+pub use piece::PieceType;
+pub use game::Game;
 
 // Constants for the game
 pub const BOARD_WIDTH: usize = 10;
